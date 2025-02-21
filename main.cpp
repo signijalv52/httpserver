@@ -1,6 +1,11 @@
+//cmake -S . -B .
+//make
+
 #include <QApplication>
 #include <QWidget>
 #include <QPushButton>
+#include <QLabel>
+#include <QLineEdit>
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QFileInfo>
@@ -25,6 +30,16 @@ public:
       return;
     }
     connect(server, &Server::newConnection, server, &Server::newClient);
+    QLineEdit* addressLine = new QLineEdit("http://" + address.toString() + ":" + QString::number(port) + "/");
+    QLabel* info = new QLabel();
+    layout->insertWidget(0, info);
+    layout->insertWidget(0, addressLine);
+    connect(server, &Server::clientPercentChanged, [info](int newValue){
+      if (newValue == 0)
+        info->setText("");
+      else
+        info->setText(QString::number(newValue) + "%");
+    });
   }
 };
 
